@@ -1,0 +1,21 @@
+// Returns the id,state,and result of actions opened by OPERATORNAME and actions named ACTIONNAME.
+// This is to cleanup actions that are expired or have a reported status, leaving all non-reported
+// non-expired actions in place
+(item 0 of it, item 1 of it, item 2 of it) of (
+( item 0 of it as string ,
+item 1 of it as string ,
+item 2 of it as string )
+ of (
+( if (exists id of it)
+      then (concatenations "%0A" of (id of it as string))
+      else ("<none>")),
+( if (exists State of it)
+      then (concatenations "%0A" of (State of it as string))
+      else ("<none>")),
+(if (exists statuses of results of it)
+      then (concatenations "%0A" of (statuses of results of it as string))
+      else ("<none>"))
+      )
+ of   
+    (bes actions whose (( name of issuer of it as string as lowercase starts with "OPERATORNAME") AND (Name of it as string as lowercase contains "ACTIONNAME")))
+) whose ((item 1 of it = "Expired") OR (item 2 of it != "<none>"))
